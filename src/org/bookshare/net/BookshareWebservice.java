@@ -4,12 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -24,10 +22,8 @@ import org.apache.http.auth.Credentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.ExecutionContext;
 import org.apache.http.protocol.HttpContext;
 
@@ -40,29 +36,7 @@ final public class BookshareWebservice {
 
 	// New endpoint for bookshare API calls. Earlier was service.bookshare.org
 	private static final String URL = "api.bookshare.org";
-	//private static final String URL = "service.bookshare.org";
-	
-	/**
-	 * Utility method that returns a MD5 encryption of a String.
-	 * @param str String to be be encrypted.
-	 * @return MD5 encrypted String.
-	 */
 
-	public String md5sum(String str){
-		byte[] md5sum = null;
-		String md5 = "";
-		try{
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			md5sum = md.digest(str.getBytes());	
-		}
-		catch(NoSuchAlgorithmException e){
-			System.out.println(e);
-		}
-
-		BigInteger number = new BigInteger(1,md5sum);
-		md5 = number.toString(16);
-		return md5;
-	}
 
 	/**
 	 * Converts the InputStream to a String.
@@ -80,11 +54,11 @@ final public class BookshareWebservice {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
 		StringBuilder sb = new StringBuilder();
-		String line = null;
+		String line;
 		try {
 			// Read each line and append a newline character at the end
 			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
+                sb.append(line).append("\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -118,7 +92,7 @@ final public class BookshareWebservice {
 	 */
 	public InputStream getResponseStream(String wsPassword, String requestUri) throws
 	URISyntaxException, IOException{
-		HttpEntity entity = null;
+		HttpEntity entity;
 		
 		HttpResponse response = getHttpResponse(wsPassword, requestUri);
 
@@ -140,23 +114,7 @@ final public class BookshareWebservice {
 	URISyntaxException, IOException{
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 
-//		httpclient.getCredentialsProvider().setCredentials(
-//				new AuthScope(URL, 443),
-//				new UsernamePasswordCredentials(wsUsername, md5sum(wsPassword)));
-
 		HttpHost targetHost = new HttpHost(URL);
-
-//		BasicHttpContext localcontext = new BasicHttpContext();
-
-		/*
-		 *  Generate BASIC scheme object and stick it to the local execution context
-		 *  Bookshare uses basic authentication scheme.
-		 */
-//		BasicScheme basicAuth = new BasicScheme();
-//		localcontext.setAttribute("preemptive-auth", basicAuth);
-
-		// Add as the first request interceptor
-//		httpclient.addRequestInterceptor(new PreemptiveAuth(), 0);
 
 		URI uri = new URI(requestUri);
 
@@ -164,19 +122,15 @@ final public class BookshareWebservice {
 		HttpGet httpget = new HttpGet(uri);
 
 		// Execute the request
-		HttpResponse response = null;
-
-		// Prepare a HTTP GET Request
-		httpget = new HttpGet(uri);
+		HttpResponse response;
 		
 		if(wsPassword != null){
-			Header header = new BasicHeader("X-password",md5sum(wsPassword));
+			Header header = new BasicHeader("X-password",DigestUtils.md5Hex(wsPassword));
 			httpget.setHeader(header);
 		}
 		
 		// Get the HttpResponse. Earlier the localcontext was used for the basic authentication.
 		// Now basic authentication is not needed as the developer key is appended to the request
-		//response = httpclient.execute(targetHost, httpget, localcontext);
 		response = httpclient.execute(targetHost, httpget);
 		
 		return response;
