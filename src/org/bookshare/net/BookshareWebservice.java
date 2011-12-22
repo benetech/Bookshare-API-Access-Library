@@ -4,28 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScheme;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.AuthState;
-import org.apache.http.auth.Credentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
 
 /**
  * This class provides the services needed for getting
@@ -36,7 +28,32 @@ final public class BookshareWebservice {
 
 	// New endpoint for bookshare API calls. Earlier was service.bookshare.org
 	private static final String URL = "api.bookshare.org";
+	//private static final String URL = "service.bookshare.org";
+	
+	/**
+	 * Utility method that returns a MD5 encryption of a String.
+	 * @param str String to be be encrypted.
+	 * @return MD5 encrypted String.
+     * @throws java.io.UnsupportedEncodingException
+	 */
 
+	public String md5sum(String str) throws UnsupportedEncodingException {
+		byte[] md5sum = null;
+		try{
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md5sum = md.digest(str.getBytes("UTF-8"));
+		}
+		catch(NoSuchAlgorithmException e){
+			System.out.println(e);
+		}
+
+        return toHex(md5sum);
+	}
+
+    private String toHex(byte[] bytes) {
+        BigInteger bi = new BigInteger(1, bytes);
+        return String.format("%0" + (bytes.length << 1) + "X", bi);
+    }
 
 	/**
 	 * Converts the InputStream to a String.
@@ -54,11 +71,11 @@ final public class BookshareWebservice {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
 		StringBuilder sb = new StringBuilder();
-		String line;
+		String line = null;
 		try {
 			// Read each line and append a newline character at the end
 			while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
+				sb.append(line + "\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -114,7 +131,11 @@ final public class BookshareWebservice {
 	URISyntaxException, IOException{
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 
+
+
 		HttpHost targetHost = new HttpHost(URL);
+
+
 
 		URI uri = new URI(requestUri);
 
@@ -125,54 +146,16 @@ final public class BookshareWebservice {
 		HttpResponse response;
 		
 		if(wsPassword != null){
-			Header header = new BasicHeader("X-password",DigestUtils.md5Hex(wsPassword));
+			Header header = new BasicHeader("X-password",md5sum(wsPassword));
 			httpget.setHeader(header);
 		}
 		
 		// Get the HttpResponse. Earlier the localcontext was used for the basic authentication.
 		// Now basic authentication is not needed as the developer key is appended to the request
+		//response = httpclient.execute(targetHost, httpget, localcontext);
 		response = httpclient.execute(targetHost, httpget);
 		
 		return response;
-	}
-	
-	/*
-	 * Implementation of preemptive basic authentication
-	 * Not used now. Was used for earlier API version of
-	 * Bookshare webservice, which used HTTP basic authentication
-	 */
-	private static class PreemptiveAuth implements HttpRequestInterceptor {
-
-		public void process(
-				final HttpRequest request, 
-				final HttpContext context) throws HttpException, IOException {
-
-			AuthState authState = (AuthState) context.getAttribute(
-					ClientContext.TARGET_AUTH_STATE);
-
-			// If no auth scheme available yet, try to initialize it preemptively
-			if (authState.getAuthScheme() == null) {
-				AuthScheme authScheme = (AuthScheme) context.getAttribute(
-						"preemptive-auth");
-				CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute(
-						ClientContext.CREDS_PROVIDER);
-				HttpHost targetHost = (HttpHost) context.getAttribute(
-						ExecutionContext.HTTP_TARGET_HOST);
-
-				if (authScheme != null) {
-					Credentials creds = credsProvider.getCredentials(
-							new AuthScope(
-									targetHost.getHostName(), 
-									targetHost.getPort()));
-					if (creds == null) {
-						throw new HttpException("No credentials for preemptive authentication");
-					}
-					authState.setAuthScheme(authScheme);
-					authState.setCredentials(creds);
-				}
-			}
-
-		}
 	}
 
 }
