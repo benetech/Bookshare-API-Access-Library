@@ -26,11 +26,25 @@ import org.apache.http.message.BasicHeader;
  */
 final public class BookshareWebservice {
 
-	// New endpoint for bookshare API calls. Earlier was service.bookshare.org
-	private static final String URL = "api.bookshare.org";
-	//private static final String URL = "service.bookshare.org";
-	
-	/**
+	// endpoint for bookshare API calls
+	private static String URL = "api.bookshare.org";
+
+    /*
+     * Default constructor
+     */
+    public BookshareWebservice() {
+
+    }
+
+    /*
+     * Constructor that allows setting of api host
+     * @param apiHost String api host
+     */
+    public BookshareWebservice(String apiHost) {
+        URL = apiHost;
+    }
+
+    /**
 	 * Utility method that returns a MD5 encryption of a String.
 	 * @param str String to be be encrypted.
 	 * @return MD5 encrypted String.
