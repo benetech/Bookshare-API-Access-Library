@@ -51,18 +51,13 @@
     
     <!-- Shared version number properties -->
     <properties>
-        <httpclient.version>4.3.3</httpclient.version>
+        <httpclient.version>4.0.3</httpclient.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.3.2</version>
-        </dependency>
-        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.9</version>
+            <version>1.4</version>
         </dependency>
         <!-- Testing -->
         <dependency>
@@ -90,23 +85,18 @@
             <scope>test</scope>
         </dependency>
         <!-- Logging -->
-        <dependency> 
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
-            <scope>runtime</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.6</version>
-            <scope>runtime</scope>
+            <groupId>commons-logging-adapters</groupId>
+            <artifactId>commons-logging-adapters</artifactId>
+            <version>1.1.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.rlespinasse</groupId>
-            <artifactId>slf4j-over-spring</artifactId>
-            <version>1.0</version>
-        </dependency>
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
