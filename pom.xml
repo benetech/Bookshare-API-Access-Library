@@ -92,9 +92,9 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-logging-adapters</groupId>
+            <groupId>commons-logging</groupId>
             <artifactId>commons-logging-adapters</artifactId>
-            <version>1.1.1</version>
+            <version>1.1</version>
         </dependency>
 
         <dependency>
