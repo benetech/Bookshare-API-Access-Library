@@ -12,7 +12,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -120,15 +119,11 @@ public final class BookshareWebservice {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	public InputStream getResponseStream(final String wsPassword, final String requestUri) throws
-	URISyntaxException, IOException{
-		HttpEntity entity;
-
+	public InputStream getResponseStream(final String wsPassword, final String requestUri)
+            throws URISyntaxException, IOException
+    {
 		final HttpResponse response = getHttpResponse(wsPassword, requestUri);
-
-		// Get hold of the response entity
-		entity = response.getEntity();
-		return entity.getContent();
+		return response.getEntity().getContent();
 	}
 
 	/**
@@ -139,36 +134,23 @@ public final class BookshareWebservice {
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	// Method for retrieving an HttpResponse
-	public HttpResponse getHttpResponse(final String wsPassword, final String requestUri) throws
-	URISyntaxException, IOException{
+	public HttpResponse getHttpResponse(final String wsPassword, final String requestUri)
+            throws URISyntaxException, IOException
+    {
 		final DefaultHttpClient httpclient = new DefaultHttpClient();
 
-
-
 		final HttpHost targetHost = new HttpHost(URL);
-
-
-
 		final URI uri = new URI(requestUri);
 
 		// Prepare a HTTP GET Request
 		final HttpGet httpget = new HttpGet(uri);
-
-		// Execute the request
-		HttpResponse response;
 
 		if(wsPassword != null){
 			final Header header = new BasicHeader("X-password",md5sum(wsPassword));
 			httpget.setHeader(header);
 		}
 
-		// Get the HttpResponse. Earlier the localcontext was used for the basic authentication.
-		// Now basic authentication is not needed as the developer key is appended to the request
-		//response = httpclient.execute(targetHost, httpget, localcontext);
-		response = httpclient.execute(targetHost, httpget);
-
-		return response;
+        // Execute the request
+		return httpclient.execute(targetHost, httpget);
 	}
-
 }
