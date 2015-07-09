@@ -50,7 +50,7 @@ public final class BookshareWebservice {
 	 * @return MD5 encrypted String.
      * @throws java.io.UnsupportedEncodingException
 	 */
-	public String md5sum(final String str) throws UnsupportedEncodingException {
+	protected String md5sum(final String str) throws UnsupportedEncodingException {
 		byte[] md5sum = null;
 		try{
 			final MessageDigest md = MessageDigest.getInstance("MD5");
