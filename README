@@ -1,5 +1,22 @@
 API access library that connects to the Bookshare's webservice.
-Services offered include ability to search for books using various criteria like authors, title etc.
-Book download option is also provided.
+Services offered include ability to search for books using various criteria like authors, 
+title etc.  Book download option is also provided.
 
-This thing is so old...
+This library is currently used only by Go Read. It should NOT be used for any new projects.  
+This library uses API v.1.
+
+-------
+TESTING
+-------
+
+To use the unit tests, you will need to create a test.properties file in the 
+src/test/resources directory.  This file is a Java properties file (see 
+https://docs.oracle.com/javase/tutorial/essential/environment/properties.html)
+
+It contains the following 3 fields:
+
+apikey=<YOUR API KEY>
+username=<BOOKSHARE USER USERNAME>
+password=<BOOKSHARE USER PASSWORD>
+
+

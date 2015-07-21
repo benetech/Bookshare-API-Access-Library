@@ -1,118 +1,111 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>benetech</groupId>
-    <artifactId>bookshare-api-access-library</artifactId>
-    <version>1.0</version>
-    <name>Bookshare API v1 - Java client</name>
-    <packaging>jar</packaging>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>benetech</groupId>
+	<artifactId>bookshare-api-access-library</artifactId>
+	<version>1.0</version>
+	<name>Bookshare API v1 - Java client</name>
+	<packaging>jar</packaging>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.7</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <!-- GENERATE SOURCE JARS -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
-                <configuration>
-                    <includePom>true</includePom>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- COMPILE -->
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    
-    <!-- Shared version number properties -->
-    <properties>
-        <httpclient.version>4.0.3</httpclient.version>
-    </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency>
-        <!-- Logging -->
-        <!-- TODO: are these used? -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging-adapters</artifactId>
-            <version>1.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <!-- end logging -->
-        
-        <!-- Testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>3.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <version>1.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-            <version>1.3</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- End Testing -->
-    </dependencies>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<!-- GENERATE SOURCE JARS -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<configuration>
+					<includePom>true</includePom>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- COMPILE -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-    <distributionManagement>
-        <repository>
-            <id>benetech-repository-releases</id>
-            <name>Benetech releases repository</name>
-            <url>http://artifactory.benetech.org/libs-releases-benetech</url>
-        </repository>
-        <snapshotRepository>
-            <id>benetech-repository-snapshots</id>
-            <name>Benetech snapshot repository</name>
-            <url>http://artifactory.benetech.org/libs-snapshots-benetech</url>
-        </snapshotRepository>
-    </distributionManagement>
+	<!-- Shared version number properties -->
+	<properties>
+		<httpclient.version>4.5</httpclient.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+		<!-- Logging -->
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
+		<!-- end logging -->
+
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>3.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- End Testing -->
+	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>benetech-repository-releases</id>
+			<name>Benetech releases repository</name>
+			<url>http://artifactory.benetech.org/libs-releases-benetech</url>
+		</repository>
+		<snapshotRepository>
+			<id>benetech-repository-snapshots</id>
+			<name>Benetech snapshot repository</name>
+			<url>http://artifactory.benetech.org/libs-snapshots-benetech</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
