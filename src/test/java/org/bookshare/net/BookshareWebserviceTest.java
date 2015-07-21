@@ -69,7 +69,7 @@ public class BookshareWebserviceTest {
         } catch (IOException e) {
             logger.error("Problem opening the properties file.", e);
             logger.error("Did you create a " + TEST_PROPERTIES + " file with the apikey in src/test/resources?");
-            logger.error("Please see the README.txt file for details.");
+            logger.error("Please see the README file for details.");
         }
     }
 
