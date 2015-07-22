@@ -50,7 +50,7 @@
 
 	<!-- Shared version number properties -->
 	<properties>
-		<httpclient.version>4.5</httpclient.version>
+		<httpclient.version>4.0.3</httpclient.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -58,17 +58,14 @@
 			<artifactId>httpclient</artifactId>
 			<version>${httpclient.version}</version>
 		</dependency>
-		<!-- Logging -->
 
+		<!-- Testing -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.5</version>
+			<scope>test</scope>
 		</dependency>
-
-		<!-- end logging -->
-
-		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

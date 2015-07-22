@@ -1,7 +1,5 @@
 package org.bookshare.net;
 
-import static org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,25 +8,22 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.X509Certificate;
+
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.Header;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.TrustStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicHeader;
 
 /**
@@ -40,14 +35,14 @@ public final class BookshareWebservice {
     private static String URL = "api.bookshare.org";
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     public BookshareWebservice() {
         // empty
     }
 
     /**
-     * Constructor that allows setting of api host
+     * Constructor that allows setting of api host.
      * @param apiHost String api host
      */
     public BookshareWebservice(final String apiHost) {
@@ -131,8 +126,7 @@ public final class BookshareWebservice {
      * @throws KeyManagementException
      */
     public InputStream getResponseStream(final String wsPassword, final String requestUri)
-            throws URISyntaxException, IOException, KeyManagementException, UnrecoverableKeyException,
-            NoSuchAlgorithmException, KeyStoreException
+            throws URISyntaxException, IOException
     {
         final HttpResponse response = getHttpResponse(wsPassword, requestUri);
         return response.getEntity().getContent();
@@ -145,34 +139,26 @@ public final class BookshareWebservice {
      * @return HttpResponse A HttpResponse object.
      * @throws URISyntaxException
      * @throws IOException
-     * @throws KeyStoreException
-     * @throws NoSuchAlgorithmException
-     * @throws UnrecoverableKeyException
-     * @throws KeyManagementException
      */
     public HttpResponse getHttpResponse(final String wsPassword, final String requestUri)
-            throws URISyntaxException, IOException, KeyManagementException, UnrecoverableKeyException,
-            NoSuchAlgorithmException, KeyStoreException
+            throws URISyntaxException, IOException
     {
+        
+        final HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
 
-        TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
-            @Override
-            public boolean isTrusted(X509Certificate[] certificate, String authType) {
-                return true;
-            }
-        };
+        final DefaultHttpClient client = new DefaultHttpClient();
 
-        SSLSocketFactory sf;
+        final SchemeRegistry registry = new SchemeRegistry();
+        final SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+        socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+        
+        // We are only registering https scheme, which means http requests will throw an error
+        registry.register(new Scheme("https", socketFactory, 443));
+        final SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+        final DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
 
-        sf = new SSLSocketFactory(acceptingTrustStrategy, ALLOW_ALL_HOSTNAME_VERIFIER);
+        HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
 
-        SchemeRegistry registry = new SchemeRegistry();
-        registry.register(new Scheme("https", 443, sf));
-        ClientConnectionManager ccm = new PoolingClientConnectionManager(registry);
-
-        DefaultHttpClient httpClient = new DefaultHttpClient(ccm);
-
-       
         final URI uri = new URI(requestUri);
 
         // Prepare a HTTP GET Request
@@ -185,5 +171,7 @@ public final class BookshareWebservice {
 
         // Execute the request
         return httpClient.execute(httpget);
+
+
     }
 }

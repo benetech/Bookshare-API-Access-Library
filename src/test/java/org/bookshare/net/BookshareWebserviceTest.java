@@ -7,10 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
 import java.util.Properties;
 
 import org.junit.Before;
@@ -137,7 +133,7 @@ public class BookshareWebserviceTest {
     }
 
     private String login(String url, String password)
-            throws URISyntaxException, IOException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException
+            throws URISyntaxException, IOException
     {
         final BookshareWebservice bws = new BookshareWebservice(apiHost);
         InputStream inputStream = bws.getResponseStream(password, url);

@@ -20,3 +20,26 @@ username=<BOOKSHARE USER USERNAME>
 password=<BOOKSHARE USER PASSWORD>
 
 
+----------------------
+ANDROID AND HTTPCLIENT
+----------------------
+
+Android 17, the version currently in use by Go Read, uses a fork of the Apache HttpClient
+class which has not been kept in sync with Apache's version.
+
+See:
+https://hc.apache.org/httpcomponents-client-4.3.x/android-port.html
+
+For this reason, do not attempt to update the pom.xml httpclient version.  It will
+break the interoperability with the Android fork.
+
+When this .jar file is added to the Go Read project, it pulls the HttpClient classes from the
+Android fork.  In this project, the HttpClient is pulled from the old Apache HttpClient library.
+
+Google has deprecated any use of Apache's HttpClient as of version 22 and is encouraging users 
+to move to a new API.
+
+See:
+http://android-developers.blogspot.com/2011/09/androids-http-clients.html
+
+
