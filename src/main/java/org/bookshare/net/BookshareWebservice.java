@@ -143,8 +143,11 @@ public final class BookshareWebservice {
     public HttpResponse getHttpResponse(final String wsPassword, final String requestUri)
             throws URISyntaxException, IOException
     {
+         
+        // BROWSER_COMPATIBLE_HOSTNAME_VERIFIER lets the *.bookshare.org certificate match the 
+        // *.qa.bookshare.org and *.staging.bookshare.org sites
         
-        final HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        final HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
 
         final DefaultHttpClient client = new DefaultHttpClient();
 
